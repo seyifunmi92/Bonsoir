@@ -1,4 +1,5 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bonsoir/bonsoir.dart';
@@ -20,6 +21,7 @@ class Bonsoirr extends StatefulWidget {
   @override
   _BonsoirrState createState() => _BonsoirrState();
 }
+
 class Devices {
   String name;
   String deviceName;
@@ -35,6 +37,7 @@ class Devices {
     );
   }
 }
+
 class _BonsoirrState extends State<Bonsoirr> {
   List phones = [
     Devices(
@@ -68,10 +71,11 @@ class _BonsoirrState extends State<Bonsoirr> {
       2,
     ),
   ];
+
   TextEditingController usernameC = TextEditingController();
   TextEditingController passnameC = TextEditingController();
   var response = "";
-  String error = "";
+  bool error = true;
   String errorCheck = "";
   String _notConnected = "";
   bool isConnected = true;
@@ -119,7 +123,6 @@ class _BonsoirrState extends State<Bonsoirr> {
   bool isNotBroadcasting = false;
   String ErrorConnecting = "";
   bool isSelected = true;
-  @override
   // void initState() {
   //   super.initState();
   //   phones.add("Iphone 11 pro max");
@@ -133,6 +136,7 @@ class _BonsoirrState extends State<Bonsoirr> {
     type: "_wonderful-service._tcp",
     port: 4530,
   );
+
   //Methods for bradcast:
   Future BroadcastService() async {
     var _broadcast = BonsoirBroadcast(service: myservice);
@@ -179,7 +183,6 @@ class _BonsoirrState extends State<Bonsoirr> {
   }
 
   Future ListenDiscovery(event) async {
-    // ignore: unused_local_variable
     var _event = BonsoirDiscoveryEventType;
     if (event._result == BonsoirBroadcastEventType.BROADCAST_STARTED) {
       print("Device Found : ${event.service.toJson()}");
@@ -189,6 +192,7 @@ class _BonsoirrState extends State<Bonsoirr> {
       print("Unknown error during ${event.service.toJson()}");
     } else {
       print("Error occurred during ${event.service.toJson()}");
+      print(BonsoirBroadcastAction);
     }
   }
 
@@ -196,63 +200,153 @@ class _BonsoirrState extends State<Bonsoirr> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          toolbarHeight: 150,
           backgroundColor: Colors.white,
           title: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+            child: Column(
               children: [
-                // isConnected
-                //     ? Text("Found $deviceamount devices")
-                //:
                 Text(
                   "BONSOIR",
                   style: TextStyle(
                     color: Colors.grey[900],
-                    fontSize: 15,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(
-                  width: 92,
-                ),
-                Text(
-                  "BROADCAST",
-                  style: TextStyle(
-                    color: Colors.grey[900],
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Text("   "),
-                ToggleSwitch(
-                  minWidth: 50.0,
-                  cornerRadius: 18.0,
-                  // ignore: prefer_const_literals_to_create_immutables
-                  activeBgColors: [
-                    const [Colors.black45],
-                    const [Colors.black45]
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    // isConnected
+                    //     ? Text("Found $deviceamount devices")
+                    //:
+                    const SizedBox(
+                      width: 0,
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          "BROADCAST",
+                          style: TextStyle(
+                            color: Colors.grey[900],
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Text("   "),
+                        ToggleSwitch(
+                          minWidth: 50.0,
+                          cornerRadius: 18.0,
+                          // ignore: prefer_const_literals_to_create_immutables
+                          activeBgColors: [
+                            const [Colors.black45],
+                            const [Colors.black45]
+                          ],
+                          activeFgColor: Colors.white,
+                          inactiveBgColor: Colors.black12,
+                          inactiveFgColor: Colors.white,
+                          initialLabelIndex: 1,
+                          totalSwitches: 2,
+                          labels: const ['Off', 'On'],
+                          radiusStyle: true,
+                          onToggle: (value) {
+                            print('switched to: $value');
+                            _BroadcastService();
+                            if (value != null) {
+                              setState(() {
+                                isConnected = true;
+                                isAvailable = true;
+                                isBroadcasting = true;
+                              });
+                            } else if (value == false) {
+                              setState(() {
+                                error = true;
+                                errorCheck = "There was an error connecting";
+                              });
+                            } else if (value == null) {
+                              setState(() {
+                                isNotBroadcasting = true;
+                              });
+                            } else {
+                              errorCheck;
+                            }
+                          },
+                          //hangeOnTap: true,
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(
+                      width: 150,
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          "DISCOVER",
+                          style: TextStyle(
+                            color: Colors.grey[900],
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Text("   "),
+                        ToggleSwitch(
+                          minWidth: 50.0,
+                          cornerRadius: 18.0,
+                          // ignore: prefer_const_literals_to_create_immutables
+                          activeBgColors: [
+                            const [Colors.black45],
+                            const [Colors.black45]
+                          ],
+                          activeFgColor: Colors.white,
+                          inactiveBgColor: Colors.black12,
+                          inactiveFgColor: Colors.white,
+                          initialLabelIndex: 1,
+                          totalSwitches: 2,
+                          labels: const ['Off', 'On'],
+                          radiusStyle: true,
+                          onToggle: (value) {
+                            print('switched to: $value');
+                            StartDiscoverBroadcast();
+
+                            if (value != null) {
+                              setState(() {
+                                isConnected = true;
+                                isAvailable = true;
+                                isBroadcasting = true;
+                              });
+                            } else if (value == false) {
+                              setState(() {
+                                error = true;
+                                errorCheck = "There was an error connecting";
+                              });
+                            } else if (value == null) {
+                              setState(() {
+                                isNotBroadcasting = true;
+                              });
+                            } else {
+                              errorCheck;
+                            }
+                          },
+                          changeOnTap: true,
+                        ),
+                      ],
+                    ),
                   ],
-                  activeFgColor: Colors.white,
-                  inactiveBgColor: Colors.black12,
-                  inactiveFgColor: Colors.white,
-                  initialLabelIndex: 1,
-                  totalSwitches: 2,
-                  labels: const ['Off', 'On'],
-                  radiusStyle: true,
-                  onToggle: (value) {
-                    print('switched to: $value');
-                    // _BroadcastService();
-                    // if (value = !null) {
-                    //   setState(() {
-                    //     isConnected = true;
-                    //     isAvailable = true;
-                    //     isBroadcasting = true;
-                    //});
-                    //}
-                  },
-                  changeOnTap: true,
                 ),
+                isConnected
+                    ? const Text(
+                        "Device found",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                        ),
+                      )
+                    : Text(
+                        errorCheck,
+                        style: const TextStyle(color: Colors.black),
+                      ),
               ],
             ),
           ),
@@ -264,7 +358,6 @@ class _BonsoirrState extends State<Bonsoirr> {
               key: Key(phones[index].name),
               child: Card(
                 child: ListTile(
-                  //Devices _response = phones[index];
                   title: Text(
                     phones[index].name,
                     style: TextStyle(
@@ -490,3 +583,17 @@ class _BonsoirrState extends State<Bonsoirr> {
 //     return Container();
 //   }
 // }
+
+
+
+// Future _BroadcastService() async {
+//     var _broadcast = BonsoirBroadcast(service: myservice);
+//     BonsoirBroadcast broadcast = _broadcast;
+//     await broadcast.start().then((user){
+//       if(user = ){}
+//     }).catchError((error){
+//       print("There was an error connecting");
+//     });
+//     print("This shows $broadcast.ready");
+//     print("This show $broadcast");
+//   }
